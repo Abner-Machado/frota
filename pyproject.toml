@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "frota"
+version = "1.0.0"
+description = "Offline toolkit for AI agent prompts and skills: context budget, prompt diff, skill security audit, run logs."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Abner Machado" }]
+keywords = ["ai", "agents", "prompt", "lint", "security", "tokens", "llm"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = []
+
+[project.scripts]
+frota = "frota.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Abner-Machado/frota"
+
+[tool.setuptools]
+packages = ["frota"]
