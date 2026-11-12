@@ -135,6 +135,17 @@ class DiffTests(ToolTestCase):
         self.assertEqual(data["old_tokens"], 0)
         self.assertEqual(data["new_tokens"], 0)
 
+    def test_json_keeps_version_field(self):
+        # prompt-diff v1.1.0 emitted "version" as the first key; dropping it
+        # would break consumers that read the tool version from the output.
+        old = self.write("old.md", "a\n")
+        new = self.write("new.md", "b\n")
+        code, out, _ = self.run_cli("diff", old, new, "--json")
+        self.assertEqual(code, 0)
+        data = json.loads(out)
+        self.assertIn("version", data)
+        self.assertEqual(list(data)[0], "version")
+
     def test_unknown_flag(self):
         old = self.write("old.md", "a\n")
         new = self.write("new.md", "b\n")

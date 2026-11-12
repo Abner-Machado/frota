@@ -12,6 +12,7 @@ import difflib
 import json
 from pathlib import Path
 
+from . import __version__
 from ._tokens import estimate_tokens
 
 RED = "\033[91m"
@@ -231,6 +232,7 @@ def run(argv):
 
     if opts["json"]:
         result = {
+            "version": __version__,
             "old_file": old_path,
             "new_file": new_path,
             "old_tokens": old_tokens,
