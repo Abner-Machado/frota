@@ -6,3 +6,4 @@ dist/
 .venv/
 venv/
 *.jsonl
+CONTRACT.md
