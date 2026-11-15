@@ -16,13 +16,13 @@ four READMEs, four different flag styles and four copies of the same token estim
 They belong together: you lint a prompt, diff the next version, audit the skill that
 uses it, and read the run log when the agent misbehaves.
 
+The four it replaces, all superseded by this repo:
+`context-lint` became `lint`, `prompt-diff` became `diff`, `skill-audit` became `audit`,
+`agent-log` became `log`.
+
 ## Install
 
-```bash
-pip install frota
-```
-
-Or from source:
+Not on PyPI. Install from source:
 
 ```bash
 git clone https://github.com/Abner-Machado/frota
