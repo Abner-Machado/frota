@@ -1,0 +1,12 @@
+# No package dependencies to watch, and the stdlib guard in CI keeps it that way. The
+# supply chain this repository does have is the actions its own workflow pins.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
+    labels:
+      - dependencies
