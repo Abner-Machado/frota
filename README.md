@@ -1,5 +1,8 @@
 # frota
 
+[![CI](https://github.com/Abner-Machado/frota/actions/workflows/ci.yml/badge.svg)](https://github.com/Abner-Machado/frota/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Offline toolkit for AI agent prompts and skills. One command, four jobs:
 
 - **lint** — context budget audit: token count, wasted space, duplicate blocks
@@ -39,7 +42,8 @@ frota audit skills/web-search/SKILL.md
 frota log runs/2026-11-11.jsonl
 ```
 
-Every command has `--json` for machine output. Use `--no-color` in CI.
+Every command has `--json` for machine output. `lint`, `diff` and `audit` also take
+`--no-color` for CI; `log` prints no colour, so it has no such flag.
 
 ### frota lint
 

@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    # The suite runs straight from the checkout: no install, which is itself part of the
+    # claim this repository makes.
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.10", "3.12", "3.13"]
+        include:
+          - os: windows-latest
+            python: "3.12"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Run the suite
+        run: python -m unittest discover -s tests -v
+
+  no-dependencies:
+    # Nothing here, including the tests, may import outside the standard library. The
+    # allowed set comes from the interpreter, so it cannot drift.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Every import is standard library
+        run: python tools/stdlib_guard.py .
+      - name: The code parses at the Python floor pyproject declares
+        run: python tools/check_python_floor.py
+
+  readme-commands-work:
+    # The four commands under "Usage" are what a reader copies first. Each one runs here,
+    # and --json has to parse, because the README promises machine output.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install .
+      - name: Build a sample prompt and a sample run log
+        run: |
+          printf 'You are a helpful assistant.\n\n\n\n\nAlways answer in English.\n\n\n\nBe concise.\n' > sample.md
+          printf 'You are a helpful assistant.\n\nAnswer in English. Be brief.\n' > sample-new.md
+          printf '{"ts":"2026-11-17T10:00:00Z","model":"haiku","tokens_in":120,"tokens_out":48}\n' > runs.jsonl
+      - name: frota lint
+        run: frota lint sample.md --no-color
+      - name: frota diff
+        run: frota diff sample.md sample-new.md --context 3 --no-color
+      - name: frota log
+        run: frota log runs.jsonl
+      - name: Every --json output parses as JSON
+        run: |
+          set -e
+          for cmd in "lint sample.md" "diff sample.md sample-new.md" "log runs.jsonl"; do
+            frota $cmd --json > out.json
+            python -c "import json,sys; json.load(open('out.json',encoding='utf-8')); print('$cmd --json parses')"
+          done
