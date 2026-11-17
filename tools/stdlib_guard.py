@@ -29,6 +29,12 @@ SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", "node_modules", "site-packa
 SOURCE_ROOTS = ("src", "lib")
 
 
+#  A compiled extension built by this repository is as local as a .py file next to it.
+#  allied-code ships alliedcore.pyd from its own Rust crate, and calling that a
+#  third-party dependency was this guard's first false positive.
+MODULE_SUFFIXES = (".py", ".pyd", ".so", ".pyi")
+
+
 def _names_in(directory):
     names = set()
     if not os.path.isdir(directory):
@@ -37,10 +43,14 @@ def _names_in(directory):
         if entry in SKIP_DIRS:
             continue
         path = os.path.join(directory, entry)
-        if entry.endswith(".py"):
-            names.add(entry[:-3])
-        elif os.path.isdir(path) and os.path.exists(os.path.join(path, "__init__.py")):
-            names.add(entry)
+        for suffix in MODULE_SUFFIXES:
+            if entry.endswith(suffix):
+                # foo.cp314-win_amd64.pyd and foo.cpython-312-x86_64.so both import as foo
+                names.add(entry[: -len(suffix)].split(".")[0])
+                break
+        else:
+            if os.path.isdir(path) and os.path.exists(os.path.join(path, "__init__.py")):
+                names.add(entry)
     return names
 
 
