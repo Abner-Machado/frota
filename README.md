@@ -5,10 +5,11 @@
 
 Offline toolkit for AI agent prompts and skills. One command, four jobs:
 
-- **lint** — context budget audit: token count, wasted space, duplicate blocks
-- **diff** — compare two prompt versions with token impact per change
-- **audit** — scan a skill file for unsafe instructions
-- **log** — agent run logger, plus a summary of any JSONL run log
+- `frota lint` counts the tokens in a prompt file and points at the waste: runs of blank
+  lines, duplicated blocks, lines nobody will read.
+- `frota diff` compares two prompt versions and prices each change in tokens.
+- `frota audit` reads a skill file looking for instructions that should not be there.
+- `frota log` records an agent run, and summarises any JSONL run log you already have.
 
 Zero dependencies. Python 3.8+. Nothing leaves your machine.
 
